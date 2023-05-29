@@ -6,12 +6,10 @@ def find_paths(matrix, start_pos, k):
 
     def get_paths(row, col, time):
         if row < 0 or col < 0 or row >= rows or col >= cols:
-            
             return []
         if time > k:
-            print('done')
             return []
-        if time == k:
+        if time >= k:
             return [[[row, col, time]]]  
         if memo[row][col][time] is not None:
             return memo[row][col][time]
@@ -35,22 +33,33 @@ def generate_matrix(m,n):
     matrix = [[0 for x in range(m)] for y in range(n)]
     return matrix
 
-matrix = generate_matrix(5,5)
+matrix = generate_matrix(3,3)
+
 
 start_position = (0, 0)
-treasure_position = (4,4)
+treasure_position = (2,2)
 path_length = 8
 
 paths = find_paths(matrix, start_position, path_length)
 
 # Printing the paths
 combined_path=[]
+
 paths_after_filtering=0
+print(paths)
 
 for path in paths:
-    if(path[-1][0]==treasure_position[0] and path[-1][1]==treasure_position[1] and path[-1][2]==path_length):
-        paths_after_filtering+=1
+    if (
+        path[-1][0] == treasure_position[0]
+        and path[-1][1] == treasure_position[1]
+        and (
+            (path_length % 2 == 0 and path[-1][2] == path_length)  # for even path_length
+            or (path_length % 2 == 1 and path[-1][2] == path_length - 1)  # for odd path_length
+        )
+    ):
+        paths_after_filtering += 1
         combined_path.extend(path)
+
 
 print(paths_after_filtering)
 print(len(paths))
